@@ -1,7 +1,6 @@
 import datetime
 import pickle
 
-
 def load_streaks(filename='streaks.pkl'):
     try:
         with open(filename, 'rb') as file:
@@ -10,14 +9,11 @@ def load_streaks(filename='streaks.pkl'):
         streaks = {}
     return streaks
 
-
 def save_streaks(streaks, filename='streaks.pkl'):
     with open(filename, 'wb') as file:
         pickle.dump(streaks, file)
 
-
-def check_streak(username):
-    streaks = load_streaks()
+def update_streak(username, streaks):
     if username in streaks:
         last_login_date = streaks[username]['last_login_date']
         current_date = datetime.date.today()
@@ -27,20 +23,22 @@ def check_streak(username):
             streaks[username]['streak'] = 1
         streaks[username]['last_login_date'] = current_date
     else:
-        streaks[username] = {'streak': 1,
-                             'last_login_date': datetime.date.today()}
-    save_streaks(streaks)
+        streaks[username] = {'streak': 1, 'last_login_date': datetime.date.today()}
+    return streaks
 
-
-def display_streak(username):
-    streaks = load_streaks()
+def display_streak(username, streaks):
     if username in streaks:
         streak = streaks[username]['streak']
         print(f"Current streak for {username}: {streak} days")
     else:
         print(f"No streak information found for {username}")
 
+def main():
+    username = input("Enter your username: ")
+    streaks = load_streaks()
+    streaks = update_streak(username, streaks)
+    save_streaks(streaks)
+    display_streak(username, streaks)
 
-username = input("Enter your username: ")
-check_streak(username)
-display_streak(username)
+if __name__ == "__main__":
+    main()
